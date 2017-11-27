@@ -11,12 +11,12 @@ class SearchBar extends Component {
 
   search(){
     console.log("in search");
-    this.props.onSearch = "search me";
+//    this.props.onSearch = "search me";
   }
 
   handleTermChange(event){
     console.log("handleTermChange");
-    this.props.onSearch = event.target.value;
+  //  this.props.onSearch = event.target.value;
   }
 
   render() {
