@@ -11,7 +11,6 @@ class Playlist extends Component {
 
 
   handleNameChange(event){
-    console.log(`event: {event}`);
     this.props.onNameChange(event.target.value);
   }
 
@@ -21,7 +20,7 @@ class Playlist extends Component {
         <input defaultValue ={'New Playlist'} value={this.props.playlistName} onChange={this.handleNameChange}/>
         {/* Add a TrackList component */}
         <TrackList trackList={this.props.playListTracks} onRemove={this.props.onRemove}/>
-        <a className="Playlist-save">SAVE TO SPOTIFY</a>
+        <a className="Playlist-save" onClick={this.props.onSave}>SAVE TO SPOTIFY</a>
       </div>
     );
   }
