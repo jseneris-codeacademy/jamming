@@ -18,7 +18,7 @@ let Spotify = {
       window.history.pushState('Access Token', null, '/');
     }
     else{
-      window.location.href = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&&redirect_uri=${redirectUri}`;
+      window.location.href = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&&redirect_uri=${redirectUri}&scope=playlist-modify-public`;
     }
   },
 
@@ -79,7 +79,8 @@ let Spotify = {
     return fetch(urlToFetch,
       {
           method: 'POST',
-          headers: {Authorization: `Bearer ${accessToken}`},
+          headers: {Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json; charset=utf-8'},
           body: JSON.stringify({name: playListName})
       })
     .then(response => response.json())
