@@ -1,11 +1,12 @@
 let accessToken;
 const clientId = "c42ba68f7ede49919335dc210de8130a";
 const redirectUri = "http://localhost:3000/";
+let userId;
 
 let Spotify = {
   getAccessToken: function(){
     if (accessToken){
-      return accessToken;
+      return new Promise(resolve => resolve(accessToken));
     }
     const accessTokenParm = window.location.href.match(/access_token=([^&]*)/);
     const expiresInParm = window.location.href.match(/expires_in=([^&]*)/);
@@ -31,7 +32,6 @@ let Spotify = {
     .then(response => response.json())
     .then(jsonResponse => {
       if (jsonResponse.tracks){
-        console.log(jsonResponse.tracks);
         return jsonResponse.tracks.items.map(track => {
           return {
             id: track.id,
@@ -41,6 +41,67 @@ let Spotify = {
             uri: track.uri
           };
         });
+      }
+    });
+  },
+
+  savePlaylist(listName, trackUriList){
+    if (!listName || !trackUriList){
+      return;
+    }
+    Spotify.getUserId().then(() => {
+      Spotify.createPlayList(listName).then(id => {
+        Spotify.addTracksPlayList(id, trackUriList).then(id => id);
+      });
+    });
+  },
+
+  getUserId(){
+    if (userId){
+      return new Promise(resolve => resolve(userId));
+    }
+    const urlToFetch = `https://cors-anywhere.herokuapp.com/https://api.spotify.com/v1/me`;
+    return fetch(urlToFetch,
+      {
+        headers: {Authorization: `Bearer ${accessToken}`}
+      })
+    .then(response => response.json())
+    .then(jsonResponse => {
+      if (jsonResponse.id){
+        userId = jsonResponse.id;
+        return userId;
+      }
+    });
+  },
+
+  createPlayList(playListName){
+    const urlToFetch = `https://cors-anywhere.herokuapp.com/https://api.spotify.com/v1/users/${userId}/playlists`;
+    return fetch(urlToFetch,
+      {
+          method: 'POST',
+          headers: {Authorization: `Bearer ${accessToken}`},
+          body: JSON.stringify({name: playListName})
+      })
+    .then(response => response.json())
+    .then(jsonResponse => {
+      if (jsonResponse.id){
+        return jsonResponse.id;
+      }
+    });
+  },
+
+  addTracksPlayList(playlistId, trackUriList){
+    const urlToFetch = `https://cors-anywhere.herokuapp.com/https://api.spotify.com/v1/users/${userId}/playlists/${playlistId}/tracks`;
+    return fetch(urlToFetch,
+      {
+          method: 'POST',
+          headers: {Authorization: `Bearer ${accessToken}`},
+          body: JSON.stringify({uris: trackUriList})
+      })
+    .then(response => response.json())
+    .then(jsonResponse => {
+      if (jsonResponse.snapshot_id){
+        return jsonResponse.snapshot_id;
       }
     });
   }
