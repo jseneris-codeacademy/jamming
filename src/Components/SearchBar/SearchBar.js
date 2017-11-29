@@ -19,6 +19,10 @@ class SearchBar extends Component {
     this.setState({searchTerm: event.target.value});
   }
 
+//  clearSearchBar(){
+//    this.setState({searchTerm: ''});
+//  }
+
   render() {
     return (
       <div className="SearchBar">
