@@ -50,8 +50,8 @@ let Spotify = {
       return;
     }
     Spotify.getUserId().then(() => {
-      Spotify.createPlayList(listName).then(id => {
-        Spotify.addTracksPlayList(id, trackUriList).then(id => id);
+      Spotify.createPlaylist(listName).then(id => {
+        Spotify.addTracksPlaylist(id, trackUriList).then(id => id);
       });
     });
   },
@@ -74,14 +74,14 @@ let Spotify = {
     });
   },
 
-  createPlayList(playListName){
+  createPlaylist(playlistName){
     const urlToFetch = `https://cors-anywhere.herokuapp.com/https://api.spotify.com/v1/users/${userId}/playlists`;
     return fetch(urlToFetch,
       {
           method: 'POST',
           headers: {Authorization: `Bearer ${accessToken}`,
                     'Content-Type': 'application/json; charset=utf-8'},
-          body: JSON.stringify({name: playListName})
+          body: JSON.stringify({name: playlistName})
       })
     .then(response => response.json())
     .then(jsonResponse => {
@@ -91,7 +91,7 @@ let Spotify = {
     });
   },
 
-  addTracksPlayList(playlistId, trackUriList){
+  addTracksPlaylist(playlistId, trackUriList){
     const urlToFetch = `https://cors-anywhere.herokuapp.com/https://api.spotify.com/v1/users/${userId}/playlists/${playlistId}/tracks`;
     return fetch(urlToFetch,
       {
